@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1=title
+  form(method='POST')
+    input(type='text', name='magnet' value=magnet)
+    input(type='submit', value='go')
+  if links
+    each link in links
+      br
+      a(href=link)=link
+  h2=msg
