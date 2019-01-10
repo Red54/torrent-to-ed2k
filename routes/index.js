@@ -21,10 +21,11 @@ router.post('/', function(req, res, next) {
     var links = [];
 
     function onTorrent(torrent) {
+      torrent.deselect(0, torrent.pieces.length - 1, false);
+      torrent.pause();
       torrent.files.forEach(function(file) {
         if (file.ed2k) links.push('ed2k://|file|'+file.name+'|'+file.length+'|'+file.ed2k.toString('hex')+'|/')
       });
-      client.remove(infohash);
       res.render('index', { title: 'magnet2ed2k', magnet: infohash, links: links, msg: 'Found' });
     }
 
