@@ -23,6 +23,9 @@ router.post('/', function(req, res, next) {
     function onTorrent(torrent) {
       torrent.deselect(0, torrent.pieces.length - 1, false);
       torrent.pause();
+    }
+
+    function loadTorrent(torrent) {
       torrent.files.forEach(function(file) {
         if (file.ed2k) links.push('ed2k://|file|'+file.name+'|'+file.length+'|'+file.ed2k.toString('hex')+'|/');
       });
@@ -32,11 +35,11 @@ router.post('/', function(req, res, next) {
     var torrent = client.get(infohash);
     if (torrent)
       if ('d13:announce-listle8:url-listlee' != torrent.torrentFile)
-        onTorrent(torrent);
+        loadTorrent(torrent);
       else
         res.render('index', { title: 'magnet2ed2k', magnet: infohash, msg: 'Torrent downloading, please wait' });
     else {
-      client.add(infohash);
+      client.add(infohash, onTorrent);
       res.render('index', { title: 'magnet2ed2k', magnet: infohash, msg: 'Torrent added, please wait' });
     }
   } else
